@@ -87,6 +87,10 @@ module HTTY
 					unless file.exist?
 						return Protocol::HTTP::Response[404, [["content-type", "text/plain"]], ["File not found: #{file.path}"]]
 					end
+					if Transcoder.needed?(file)
+						body, content_type = Transcoder.start(file)
+						return Protocol::HTTP::Response[200, [["content-type", content_type]], body]
+					end
 
 					total_size   = ::File.size(file.path)
 					range_header = header_value(request, "range")

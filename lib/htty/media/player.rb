@@ -6,4 +6,5 @@
 require_relative "player/version"
 require_relative "player/file"
 require_relative "player/playlist"
+require_relative "player/transcoder"
 require_relative "player/application"
