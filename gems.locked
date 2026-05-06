@@ -45,6 +45,9 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
+    covered (0.28.1)
+      console (~> 1.0)
+      msgpack (~> 1.0)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -56,6 +59,7 @@ GEM
     mapping (1.1.3)
     markly (0.16.0)
     metrics (0.15.0)
+    msgpack (1.8.0)
     protocol-hpack (1.5.1)
     protocol-http (0.62.2)
     protocol-http1 (0.39.0)
@@ -70,6 +74,10 @@ GEM
     samovar (2.4.1)
       console (~> 1.0)
       mapping (~> 1.0)
+    sus (0.36.0)
+    sus-fixtures-async (0.2.0)
+      async
+      sus (~> 0.10)
     traces (0.18.2)
     xrb (0.11.2)
 
@@ -80,7 +88,10 @@ PLATFORMS
 DEPENDENCIES
   bake-gem
   bake-releases
+  covered
   htty-media-player!
+  sus
+  sus-fixtures-async
 
 CHECKSUMS
   async (2.39.0) sha256=df18730073f2bbb45788077dfa20cb365ecc1b9453969f44de6796b5191a00aa
@@ -92,6 +103,7 @@ CHECKSUMS
   bake-releases (0.5.4) sha256=f692ca71a121dd0373c32957abc3db38ca12be282d4e92d8a1e4a7ed7ae633e0
   bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   console (1.34.3) sha256=869fbd74697efc4c606f102d2812b0b008e4e7fd738a91c591e8577140ec0dcc
+  covered (0.28.1) sha256=6ee4338883b5d0c6c91f2fb34a50c7dc9619b1d3a6b7b9148f21fb1814d5ce05
   fiber-annotation (0.2.0) sha256=7abfadf1d119f508867d4103bf231c0354d019cc39a5738945dec2edadaf6c03
   fiber-local (1.1.0) sha256=c885f94f210fb9b05737de65d511136ea602e00c5105953748aa0f8793489f06
   fiber-storage (1.0.1) sha256=f48e5b6d8b0be96dac486332b55cee82240057065dc761c1ea692b2e719240e1
@@ -103,6 +115,7 @@ CHECKSUMS
   mapping (1.1.3) sha256=2274931d20ecd46eaafdd1e00c58cc7472133b213bcac335cc7733d3c75f4da2
   markly (0.16.0) sha256=6f70d79e385b1efc9e171f74c81628826259039fe6c778e03c3924c71dac5511
   metrics (0.15.0) sha256=61ded5bac95118e995b1bc9ed4a5f19bc9814928a312a85b200abbdac9039072
+  msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   protocol-hpack (1.5.1) sha256=6feca238b8078da1cd295677d6f306c6001af92d75fe0643d33e6956cbc3ad91
   protocol-http (0.62.2) sha256=e1c1f2f56029c1af8c4e2b8a67d0d096c76620f3afd8d99d1dcd2f6b8ffa773b
   protocol-http1 (0.39.0) sha256=e49b3f4cda6f5d94c76a323d2b7f6977cba3ebd082d2da437039594da77ad8eb
@@ -110,6 +123,8 @@ CHECKSUMS
   protocol-htty (0.3.0) sha256=3e1239604e365c6ca9cb1a49e4699e1f65f289a57cd2cc3822a7c4e7a747b12e
   protocol-url (0.4.0) sha256=64d4c03b6b51ad815ac6fdaf77a1d91e5baf9220d26becb846c5459dacdea9e1
   samovar (2.4.1) sha256=c3b91dd0580771e3bc600621c1111f29542529dcffafaac3b6bf068b3f309e80
+  sus (0.36.0) sha256=5e1828908cab1ccb1dffcf2d14dfb72e2089a0cd77ee979eee6d61beaaa3722f
+  sus-fixtures-async (0.2.0) sha256=8c2b20b87f62da8cf0ce3efce3f9435370069371cd75ac23cdc7936f6402f9b7
   traces (0.18.2) sha256=80f1649cb4daace1d7174b81f3b3b7427af0b93047759ba349960cb8f315e214
   xrb (0.11.2) sha256=1e682acd8b7b58bbe3dc3dd0e5d3c1a6dbc7ff67d009abc50d94fac43b9f0870
 

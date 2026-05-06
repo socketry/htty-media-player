@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/htty_media_player/version"
+require_relative "lib/htty/media/player/version"
 
 Gem::Specification.new do |spec|
 	spec.name = "htty-media-player"
-	spec.version = HTTYMediaPlayer::VERSION
+	spec.version = HTTY::Media::Player::VERSION
 
 	spec.summary = "A terminal media player using HTTY and HTML5."
 	spec.authors = ["Samuel Williams"]

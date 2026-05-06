@@ -3,6 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2026, by Samuel Williams.
 
-module HTTYMediaPlayer
-	VERSION = "0.1.0"
+module HTTY
+	module Media
+		module Player
+			VERSION = "0.1.0"
+		end
+	end
 end

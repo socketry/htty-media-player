@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Media Player</title>
+		<style>
+			*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+			html, body {
+				width: 100%; height: 100%;
+				background: #141414;
+				color: #e5e5e5;
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			}
+
+			header {
+				padding: 24px 32px 16px;
+				border-bottom: 1px solid #333;
+			}
+
+			header h1 {
+				font-size: 1.5rem;
+				font-weight: 700;
+				letter-spacing: -0.01em;
+			}
+
+			.container {
+				padding: 24px 32px;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 0.95rem;
+			}
+
+			thead th {
+				text-align: left;
+				padding: 8px 12px;
+				font-size: 0.75rem;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				color: #999;
+				border-bottom: 1px solid #333;
+			}
+
+			tbody tr {
+				border-bottom: 1px solid #222;
+				transition: background 0.1s;
+			}
+
+			tbody tr:hover { background: #1f1f1f; }
+
+			tbody tr.last-played { background: #1a1a2e; }
+
+			td {
+				padding: 12px 12px;
+				vertical-align: middle;
+			}
+
+			td.icon { width: 36px; font-size: 1.1rem; }
+
+			td.title a {
+				color: #e5e5e5;
+				text-decoration: none;
+				font-weight: 500;
+			}
+
+			td.title a:hover { color: #fff; text-decoration: underline; }
+
+			td.duration {
+				color: #999;
+				font-variant-numeric: tabular-nums;
+				white-space: nowrap;
+				width: 80px;
+			}
+
+			td.kind { width: 80px; }
+
+			.badge {
+				display: inline-block;
+				padding: 2px 8px;
+				border-radius: 4px;
+				font-size: 0.72rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+
+			.badge-audio { background: #1a3a4a; color: #5bc8e8; }
+			.badge-video { background: #3a1a2e; color: #e85b9a; }
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>&#127916; Media Player</h1>
+		</header>
+		<div class="container">
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th>Title</th>
+						<th>Duration</th>
+						<th>Kind</th>
+					</tr>
+				</thead>
+				<tbody>
+<?r self.playlist.files.each_with_index do |file, index| ?>
+<?r if index == self.playlist.last_index ?>
+					<tr class="last-played">
+<?r else ?>
+					<tr>
+<?r end ?>
+						<td class="icon"><?r if file.audio? ?>&#127925;<?r else ?>&#127916;<?r end ?></td>
+						<td class="title"><a href="/player?index=#{index}">#{file.title}</a></td>
+						<td class="duration">#{file.duration_label || "—"}</td>
+						<td class="kind"><span class="badge <?r if file.audio? ?>badge-audio<?r else ?>badge-video<?r end ?>"><?r if file.audio? ?>Audio<?r else ?>Video<?r end ?></span></td>
+					</tr>
+<?r end ?>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

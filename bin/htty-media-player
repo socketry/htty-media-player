@@ -5,24 +5,31 @@
 # Copyright, 2026, by Samuel Williams.
 
 require "async/htty"
-require_relative "../lib/htty_media_player"
+require_relative "../lib/htty/media/player"
 
-path = ARGV.first
+include HTTY::Media::Player
 
-unless path
-	$stderr.puts "Usage: htty-media-player <file>"
-	$stderr.puts ""
-	$stderr.puts "Examples:"
-	$stderr.puts "  htty-media-player audio.mp3"
-	$stderr.puts "  htty-media-player video.mp4"
+playlist = if ARGV.empty?
+	Playlist.from_directory(Dir.pwd)
+elsif ARGV.size == 1 && File.directory?(ARGV.first)
+	Playlist.from_directory(ARGV.first)
+else
+	missing = ARGV.reject { |p| File.exist?(p) }
+	if missing.any?
+		$stderr.puts "Error: File(s) not found: #{missing.join(", ")}"
+		exit 1
+	end
+	Playlist.from_paths(ARGV)
+end
+
+if playlist.files.empty?
+	$stderr.puts "No supported media files found."
 	exit 1
 end
 
-unless File.exist?(path)
-	$stderr.puts "Error: File not found: #{path}"
-	exit 1
-end
+$stderr.puts "Loading metadata (ffprobe)…"
+playlist.load_metadata!
 
-app = HTTYMediaPlayer::Application.new(path)
+app = Application.new(playlist)
 
 Async::HTTY::Server.open(app)

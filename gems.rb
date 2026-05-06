@@ -12,3 +12,9 @@ group :maintenance, optional: true do
 	gem "bake-gem"
 	gem "bake-releases"
 end
+
+group :development do
+	gem "sus"
+	gem "covered"
+	gem "sus-fixtures-async"
+end
