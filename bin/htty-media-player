@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Released under the MIT License.
+# Copyright, 2026, by Samuel Williams.
+
+require "async/htty"
+require_relative "../lib/htty_media_player"
+
+path = ARGV.first
+
+unless path
+	$stderr.puts "Usage: htty-media-player <file>"
+	$stderr.puts ""
+	$stderr.puts "Examples:"
+	$stderr.puts "  htty-media-player audio.mp3"
+	$stderr.puts "  htty-media-player video.mp4"
+	exit 1
+end
+
+unless File.exist?(path)
+	$stderr.puts "Error: File not found: #{path}"
+	exit 1
+end
+
+app = HTTYMediaPlayer::Application.new(path)
+
+Async::HTTY::Server.open(app)
