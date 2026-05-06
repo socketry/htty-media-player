@@ -35,11 +35,12 @@ module HTTY
 				# @parameter artist [String | Nil] Embedded artist tag.
 				# @parameter album [String | Nil] Embedded album tag.
 				def initialize(path, duration: nil, tag_title: nil, artist: nil, album: nil)
-					@path      = ::File.expand_path(path)
-					@duration  = duration
-					@tag_title = tag_title
-					@artist    = artist
-					@album     = album
+					@path            = ::File.expand_path(path)
+					@duration        = duration
+					@tag_title       = tag_title
+					@artist          = artist
+					@album           = album
+					@metadata_loaded = false
 				end
 
 				# @attribute [String] Absolute path to the media file.
@@ -56,6 +57,9 @@ module HTTY
 
 				# @attribute [String | Nil] Embedded album tag.
 				attr_accessor :album
+
+				# @attribute [Boolean] Whether metadata has been probed/loaded for this file.
+				attr_accessor :metadata_loaded
 
 				# The display title: embedded tag if present, otherwise the filename.
 				# @returns [String]

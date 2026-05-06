@@ -51,9 +51,9 @@
 		<a id="close" href="/" title="Back to playlist">&#x2715;</a>
 
 <?r if self.file.audio? ?>
-		<audio src="/media?index=#{self.index}" controls autoplay></audio>
+		<audio src="/media?index=#{self.index}" controls autoplay preload="metadata"></audio>
 <?r else ?>
-		<video src="/media?index=#{self.index}" controls autoplay></video>
+		<video src="/media?index=#{self.index}" controls autoplay preload="metadata"></video>
 <?r end ?>
 
 		<script>

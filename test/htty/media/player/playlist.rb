@@ -106,4 +106,20 @@ describe HTTY::Media::Player::Playlist do
 			expect(playlist[0].duration).to be == nil
 		end
 	end
+
+	with "old-format cache (duration only, no tag_title key)" do
+		let(:paths) {[make_file("a.mp3")]}
+
+		it "leaves metadata_loaded false so probing is re-triggered" do
+			old_cache = {version: HTTY::Media::Player::VERSION, last_index: 0,
+				files: {paths[0] => {duration: 120.0}}}
+			File.write(File.join(tmpdir, ".media.json"), JSON.generate(old_cache))
+
+			playlist = subject.from_paths(paths, cache_dir: tmpdir)
+			# Duration was restored from cache...
+			expect(playlist[0].duration).to be == 120.0
+			# ...but metadata_loaded is false, so load_metadata! would re-probe.
+			expect(playlist[0].metadata_loaded).to be == false
+		end
+	end
 end

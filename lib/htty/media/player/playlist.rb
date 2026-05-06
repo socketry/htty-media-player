@@ -89,14 +89,15 @@ module HTTY
 					changed = false
 
 					@files.each do |file|
-						next if file.duration
+						next if file.duration && file.metadata_loaded
 
 						meta = probe_metadata(file.path)
 						if meta
-							file.duration  = meta[:duration]
-							file.tag_title = meta[:tag_title]
-							file.artist    = meta[:artist]
-							file.album     = meta[:album]
+							file.duration        = meta[:duration]
+							file.tag_title       = meta[:tag_title]
+							file.artist          = meta[:artist]
+							file.album           = meta[:album]
+							file.metadata_loaded = true
 							changed = true
 						end
 					end
@@ -142,9 +143,14 @@ module HTTY
 								file.duration = d.to_f
 							end
 
-							file.tag_title = entry[:tag_title] || entry["tag_title"]
-							file.artist    = entry[:artist]    || entry["artist"]
-							file.album     = entry[:album]     || entry["album"]
+							# Only mark metadata loaded if tag_title key was explicitly stored —
+							# distinguishes a cached nil from a cache entry that pre-dates tag support.
+							if entry.key?(:tag_title)
+								file.tag_title       = entry[:tag_title]
+								file.artist          = entry[:artist]
+								file.album           = entry[:album]
+								file.metadata_loaded = true
+							end
 						end
 					end
 				rescue => error
