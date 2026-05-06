@@ -12,8 +12,18 @@ describe HTTY::Media::Player::File do
 	with "an audio file" do
 		let(:file) {subject.new(mp3_path, duration: 222.4)}
 
-		it "reports the correct title" do
+		it "reports the filename as title when no tag is present" do
 			expect(file.title).to be == "track.mp3"
+		end
+
+		it "prefers the tag title over the filename" do
+			file.tag_title = "My Song"
+			expect(file.title).to be == "My Song"
+		end
+
+		it "returns the filename regardless of tag" do
+			file.tag_title = "My Song"
+			expect(file.filename).to be == "track.mp3"
 		end
 
 		it "detects the MIME type" do
@@ -62,10 +72,10 @@ describe HTTY::Media::Player::File do
 	end
 
 	with "#to_h" do
-		let(:file) {subject.new(mp3_path, duration: 99.5)}
+		let(:file) {subject.new(mp3_path, duration: 99.5, tag_title: "Song", artist: "Band", album: "Record")}
 
-		it "serialises duration" do
-			expect(file.to_h).to be == {duration: 99.5}
+		it "serialises duration and tags" do
+			expect(file.to_h).to be == {duration: 99.5, tag_title: "Song", artist: "Band", album: "Record"}
 		end
 	end
 end

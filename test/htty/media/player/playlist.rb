@@ -4,6 +4,7 @@
 # Copyright, 2026, by Samuel Williams.
 
 require "htty/media/player/playlist"
+require "htty/media/player/version"
 require "tmpdir"
 require "json"
 
@@ -65,10 +66,13 @@ describe HTTY::Media::Player::Playlist do
 	with "cache persistence" do
 		let(:paths) {[make_file("a.mp3"), make_file("b.mp4")]}
 
-		it "saves and reloads last_index and durations" do
+		it "saves and reloads last_index, durations and tags" do
 			playlist = subject.from_paths(paths, cache_dir: tmpdir)
-			playlist.files[0].duration = 120.0
-			playlist.files[1].duration = 300.5
+			playlist.files[0].duration  = 120.0
+			playlist.files[0].tag_title = "My Song"
+			playlist.files[0].artist    = "Some Artist"
+			playlist.files[0].album     = "Some Album"
+			playlist.files[1].duration  = 300.5
 			playlist.last_index = 1
 			playlist.save_cache!
 
@@ -76,13 +80,30 @@ describe HTTY::Media::Player::Playlist do
 			expect(File.exist?(cache_path)).to be == true
 
 			data = JSON.parse(File.read(cache_path))
+			expect(data["version"]).to be == HTTY::Media::Player::VERSION
 			expect(data["last_index"]).to be == 1
 
 			# Reload from cache
 			playlist2 = subject.from_paths(paths, cache_dir: tmpdir)
 			expect(playlist2.last_index).to be == 1
 			expect(playlist2[0].duration).to be == 120.0
+			expect(playlist2[0].tag_title).to be == "My Song"
+			expect(playlist2[0].artist).to be == "Some Artist"
+			expect(playlist2[0].album).to be == "Some Album"
 			expect(playlist2[1].duration).to be == 300.5
+		end
+	end
+
+	with "stale cache (wrong version)" do
+		let(:paths) {[make_file("a.mp3")]}
+
+		it "ignores the cache and starts fresh" do
+			stale = {version: "0.0.0", last_index: 1, files: {paths[0] => {duration: 999.0}}}
+			File.write(File.join(tmpdir, ".media.json"), JSON.generate(stale))
+
+			playlist = subject.from_paths(paths, cache_dir: tmpdir)
+			expect(playlist.last_index).to be == 0
+			expect(playlist[0].duration).to be == nil
 		end
 	end
 end

@@ -8,6 +8,7 @@ require "open3"
 require "shellwords"
 
 require_relative "file"
+require_relative "version"
 
 module HTTY
 	module Media
@@ -90,9 +91,12 @@ module HTTY
 					@files.each do |file|
 						next if file.duration
 
-						duration = probe_duration(file.path)
-						if duration
-							file.duration = duration
+						meta = probe_metadata(file.path)
+						if meta
+							file.duration  = meta[:duration]
+							file.tag_title = meta[:tag_title]
+							file.artist    = meta[:artist]
+							file.album     = meta[:album]
 							changed = true
 						end
 					end
@@ -103,6 +107,7 @@ module HTTY
 				# Persist the current state (durations + last_index) to `.media.json`.
 				def save_cache!
 					data = {
+						version: VERSION,
 						last_index: @last_index,
 						files: {}
 					}
@@ -123,6 +128,9 @@ module HTTY
 
 					data = JSON.parse(::File.read(@cache_path), symbolize_names: true)
 
+					# Discard cache if it was written by a different version.
+					return if data[:version] != VERSION
+
 					@last_index = data[:last_index].to_i.clamp(0, [@files.size - 1, 0].max)
 
 					if (file_cache = data[:files])
@@ -133,13 +141,17 @@ module HTTY
 							if (d = entry[:duration] || entry["duration"])
 								file.duration = d.to_f
 							end
+
+							file.tag_title = entry[:tag_title] || entry["tag_title"]
+							file.artist    = entry[:artist]    || entry["artist"]
+							file.album     = entry[:album]     || entry["album"]
 						end
 					end
 				rescue => error
 					warn "htty-media-player: could not load cache #{@cache_path}: #{error.message}"
 				end
 
-				def probe_duration(path)
+				def probe_metadata(path)
 					return nil unless system("which ffprobe > /dev/null 2>&1")
 
 					stdout, _stderr, status = Open3.capture3(
@@ -152,7 +164,20 @@ module HTTY
 					return nil unless status.success?
 
 					data = JSON.parse(stdout)
-					data.dig("format", "duration")&.to_f
+					fmt  = data["format"] || {}
+					tags = fmt["tags"] || {}
+
+					# Tag keys vary by format/case — normalise to lowercase.
+					tags = tags.transform_keys(&:downcase)
+
+					duration = fmt["duration"]&.to_f
+
+					{
+						duration:  duration,
+						tag_title: tags["title"]&.strip.then { |v| v&.empty? ? nil : v },
+						artist:    tags["artist"]&.strip.then { |v| v&.empty? ? nil : v },
+						album:     tags["album"]&.strip.then { |v| v&.empty? ? nil : v },
+					}
 				rescue
 					nil
 				end

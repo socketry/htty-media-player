@@ -31,9 +31,15 @@ module HTTY
 			class File
 				# @parameter path [String] Absolute path to the media file.
 				# @parameter duration [Float | Nil] Duration in seconds, or nil if unknown.
-				def initialize(path, duration: nil)
-					@path = ::File.expand_path(path)
-					@duration = duration
+				# @parameter tag_title [String | Nil] Embedded metadata title tag.
+				# @parameter artist [String | Nil] Embedded artist tag.
+				# @parameter album [String | Nil] Embedded album tag.
+				def initialize(path, duration: nil, tag_title: nil, artist: nil, album: nil)
+					@path      = ::File.expand_path(path)
+					@duration  = duration
+					@tag_title = tag_title
+					@artist    = artist
+					@album     = album
 				end
 
 				# @attribute [String] Absolute path to the media file.
@@ -42,9 +48,24 @@ module HTTY
 				# @attribute [Float | Nil] Duration in seconds.
 				attr_accessor :duration
 
-				# The display title derived from the filename.
+				# @attribute [String | Nil] Embedded title tag (may be nil).
+				attr_accessor :tag_title
+
+				# @attribute [String | Nil] Embedded artist tag.
+				attr_accessor :artist
+
+				# @attribute [String | Nil] Embedded album tag.
+				attr_accessor :album
+
+				# The display title: embedded tag if present, otherwise the filename.
 				# @returns [String]
 				def title
+					@tag_title || ::File.basename(@path)
+				end
+
+				# The filename, regardless of any embedded title tag.
+				# @returns [String]
+				def filename
 					::File.basename(@path)
 				end
 
@@ -94,7 +115,7 @@ module HTTY
 				# Serialise to a plain Hash suitable for JSON.
 				# @returns [Hash]
 				def to_h
-					{duration: @duration}
+					{duration: @duration, tag_title: @tag_title, artist: @artist, album: @album}
 				end
 			end
 		end

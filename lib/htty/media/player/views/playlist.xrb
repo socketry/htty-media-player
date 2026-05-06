@@ -69,6 +69,13 @@
 
 			td.title a:hover { color: #fff; text-decoration: underline; }
 
+			td.title .subtitle {
+				display: block;
+				font-size: 0.78rem;
+				color: #888;
+				margin-top: 2px;
+			}
+
 			td.duration {
 				color: #999;
 				font-variant-numeric: tabular-nums;
@@ -114,7 +121,13 @@
 					<tr>
 <?r end ?>
 						<td class="icon"><?r if file.audio? ?>&#127925;<?r else ?>&#127916;<?r end ?></td>
-						<td class="title"><a href="/player?index=#{index}">#{file.title}</a></td>
+						<td class="title">
+							<a href="/player?index=#{index}">#{file.title}</a>
+<?r subtitle = [file.artist, file.album].compact.join(" — ") ?>
+<?r unless subtitle.empty? ?>
+							<span class="subtitle">#{subtitle}</span>
+<?r end ?>
+						</td>
 						<td class="duration">#{file.duration_label || "—"}</td>
 						<td class="kind"><span class="badge <?r if file.audio? ?>badge-audio<?r else ?>badge-video<?r end ?>"><?r if file.audio? ?>Audio<?r else ?>Video<?r end ?></span></td>
 					</tr>
